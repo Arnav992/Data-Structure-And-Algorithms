@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+void dfs_helper(vector<int> g[],vector<int>& vals,vector<int>& visited,int src){
+  visited[src]=1;
+  for(int x:g[src]){
+    if(visited[x]==0)
+      dfs_helper(g, vals, visited, x);
+  }
+  // adding value while going back
+  vals.push_back(src);
+  return;
+}
+void kosaraju(vector<int> g[],int n){
+  // Step 1 do dfs and add components
+  vector<int> vals, visited(n,0);
+  for(int i=0; i<n; i++)
+    if(visited[i]==0) 
+      dfs_helper(g, vals, visited,i);
+  
+  for(auto x:vals){
+    cout<<x<<" ";
+  }
+  cout<<endl;
+  // Step 2 Reverse the graph
+  vector<int> g2[n];
+  for(int i=0; i<n; i++){
+    for(int x:g[i]){
+      g2[x].push_back(i);
+    }
+  }
+
+  // Step 3
+  vector<vector<int>> ans;
+  // making visited array `0`
+  for(int& x:visited)x=0;
+
+  for(int i=n-1; i>=0; i--){
+    vector<int> temp;
+    if(visited[vals[i]]==0)
+      dfs_helper(g2, temp, visited, vals[i]);
+    ans.push_back(temp);
+  }
+
+
+  for(auto x:ans){
+    for(int y:x)
+      cout<<y<<" ";
+    cout<<endl;
+  }
+}
+int main() {
+  int n=8;
+  vector<int> g[7];
+  for(int i=0; i<8; i++){
+    int x,y;
+    cin>>x>>y;
+    g[x].push_back(y);
+  }
+  kosaraju(g, 7);
+}
