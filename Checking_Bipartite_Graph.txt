@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+bool bfs_implementation(vector<int> g[],int n){
+  vector<int> color(n, -1);
+  int u_color=1, curr=g[0][0];
+  color[curr]=1;
+  queue<int> q;
+  q.push(curr);
+  while(!q.empty()){
+    // Taking 1st val;
+    curr=q.front(), q.pop();
+    u_color=color[curr];
+
+    // Iteration for nbr
+    for(auto x: g[curr]){
+      if(color[x]==u_color){
+        cout<<"Not a Bipartite Graph"<<endl;
+        return false;
+      }
+      else if(color[x]==-1){
+        q.push(x),color[x]=1-u_color;
+      }
+    }
+  }
+
+  cout<<"Is Bipartite"<<endl;
+  return true;
+}
+int main() {
+  int n=5;
+  vector<int> g[n];
+  for(int i=0; i<5 ;i++){
+    int x,y;
+    cin>>x>>y;
+    g[x].push_back(y);
+    g[y].push_back(x);
+  }
+  bfs_implementation(g, n);
+  return 0;
+}
