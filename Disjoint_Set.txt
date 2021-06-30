@@ -1,0 +1,44 @@
+#include <bits/stdc++.h>
+using namespace std;
+class Graph{
+  int V;
+  list<pair<int, int>> l;
+public : 
+  Graph(int v){
+    this->V=v;
+  }
+  void add_edge(int x,int y){
+    l.push_back({x, y});
+  }
+  int find(int i,vector<int>& v){
+    if(v[i]==-1)return i;
+    return find(v[i], v);
+  }
+  void union_set(int s1,int s2,vector<int>& v){
+    if(s1!=s2)
+      v[s2]=s1;
+    return ;
+  }
+  bool detect_cycle(){
+    vector<int> parent(V, -1);
+    for(auto e: l){
+      int a=e.first, b=e.second;
+      int s1 = find(a, parent);
+      int s2 = find(b, parent);
+      if(s1!=s2){
+        union_set(s1, s2, parent);
+      } 
+      else
+        return true;
+    }
+    return false;
+  }
+};
+int main() {
+  Graph g(4);
+  g.add_edge(0, 1);
+  g.add_edge(0, 3);
+  g.add_edge(2, 1);
+  g.add_edge(2, 3);
+  cout<<g.detect_cycle()<<endl;
+}
