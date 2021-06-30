@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+using namespace std;
+template<typename T>
+class graph{
+  unordered_map<T, vector<pair<T, int>>> mp;
+public:
+  void add_edge(T x,T y,int wt,bool bidir=true){
+    mp[x].push_back({y, wt});
+    if(bidir){
+      mp[y].push_back({x, wt});
+    }
+  }
+  void print(){
+    for(auto x:mp){
+      cout<<x.first<<"->";
+      for(auto y:x.second){
+        cout<<"("<<y.first<<","<<y.second<<"),";
+      }
+      cout<<endl;
+    }
+    return ;
+  }
+  void Dijkstra(T src){
+    unordered_map<T, int> dist;
+    for(auto x:mp)
+      dist[x.first]=INT_MAX;
+    
+    dist[src]=0;
+    set<pair<int, T>> st;
+    st.insert({0, src});
+
+    while(!st.empty()){
+      auto p= *(st.begin());
+      T node=p.second;
+      int node_dist = p.first;
+      st.erase(st.begin());
+      for(auto nbr: mp[node]){
+
+        if(node_dist+nbr.second < dist[nbr.first]){
+            auto it= st.find({dist[nbr.first], nbr.first});
+            if(it!=st.end())
+              st.erase(it);
+            
+            dist[nbr.first]=node_dist+nbr.second;
+            st.insert({dist[nbr.first], nbr.first});
+        }
+      }
+    }
+    for(auto x:dist){
+      cout<<x.first<<"--"<<x.second<<endl;
+    }
+    return ;
+  }
+};
+int main(){
+  graph<char>g;
+  g.add_edge('a', 'b', 1);
+  g.add_edge('b', 'c', 4);
+  g.add_edge('a', 'c', 4);
+  g.add_edge('b', 'd', 7);
+  g.add_edge('c', 'd', 5);
+  g.add_edge('c', 'e', 3);
+  g.add_edge('b', 'e', 2);
+  g.add_edge('d', 'e', 4);
+  g.add_edge('f', 'd', 7);
+  g.add_edge('e', 'f', 6);
+
+  g.Dijkstra('a');
+}
