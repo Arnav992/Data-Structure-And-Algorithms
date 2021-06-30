@@ -1,0 +1,54 @@
+#include <bits/stdc++.h>
+using namespace std;
+class graph{
+  vector<vector<int>> v;
+public : 
+  void add_edge(int x,int y,int w){
+    v.push_back({w, x, y});
+  }
+  int find(int i,vector<int>& p){
+    if(p[i]==-1)return i;
+    p[i]=find(p[i], p);
+    return p[i];
+  }
+  void unite(int a,int b,vector<int>&p,vector<int>& rank){
+    int s1=find(a, p), s2=find(b, p);
+    if(s1!=s2){
+      if(rank[s1]>rank[s2])
+        p[s2]=s1, rank[s1]+=rank[s2];
+      else
+        p[s1]=s2, rank[s2]+=rank[s1];
+    }
+    return ;
+  }
+  int krushal_algo(){
+    int ans=0;
+    int n = v.size(); 
+    vector<int> parent(n ,-1),rank(n, 1);
+    // Step 1 (Sorting)
+    sort(v.begin(), v.end());
+    for(auto edge: v){
+      int w=edge[0], x=edge[1], y= edge[2];
+      if(find(x, parent)!=find(y, parent)){
+        unite(x, y, parent, rank);
+        ans+=w;
+      }
+    }
+    return ans;
+  }
+};
+int main(){
+  graph g;
+  g.add_edge(0, 1, 1);
+  g.add_edge(3, 1, 1);
+  g.add_edge(2, 4, 1);
+  g.add_edge(0, 2, 2);
+  g.add_edge(2, 3, 2);
+  g.add_edge(3, 4, 2);
+  g.add_edge(1, 2, 3);
+  g.add_edge(1, 4, 3);
+  g.add_edge(4, 5, 3);
+  g.add_edge(5, 3, 4);
+
+  cout<<g.krushal_algo()<<endl;
+}
